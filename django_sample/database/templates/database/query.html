@@ -2,6 +2,56 @@
 
 {% block content %}
 
-<p> Query </p>
+<style>
+
+    .form-row {
+        display: flex;
+        align-items: left;
+        margin-bottom: 10px;
+    }
+    .form-row label {
+        width: 250px; 
+        margin-right: 1px; 
+    }
+    .form-row input[type="text"] {
+        width: 150px;
+    }
+
+    
+    
+    
+</style>
+
+
+<body>
+    <h1>Query our database</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class='form-row'>
+            <label for="{{form.gisaid_accession.id_for_gisaid_accession}}">GISAID Accession:</label>
+            {{form.gisaid_accession}}
+        </div>
+        <div class='form-row'>
+            <label for="{{form.type.id_for_type}}">Type:</label>
+            {{form.type}}
+        </div>
+        <div class='form-row'>
+                <label for="{{form.clade.id_for_clade}}">Clade:</label>
+                {{form.clade}}
+            </div>
+
+            <div class='form-row'>
+                <label for="{{form.subclade.id_for_subclade}}">Subclade:</label>
+                {{form.subclade}}
+            </div>
+
+            <button class='submit-button'>Query</button>
+    </form>
+
+
+</body>
+
 
 {% endblock %}
