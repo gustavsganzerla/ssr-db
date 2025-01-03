@@ -7,6 +7,10 @@
     <h1>Results searched in <u>{{search_type}}</u>.</h1>
     <h2>A total of <u>{{len}}</u> records were fetched </h2>
 
+    <a href="{% url 'database:download_vntr'%}"download>
+        <button class="download-button"> Download results (.csv)</button>
+    </a>
+
 <table>
     <thead>
         <tr>

@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from . forms import QueryForm
 from django.db.models import Q, Func, Value
 from .models import Cssr, Issr, Ssr, Vntr
+import csv
 
 # Create your views here.
 
@@ -51,6 +52,8 @@ def query(request):
                             'clade':item['clade'],
                             'subclade':item['subclade']
                         })
+
+                    request.session['context'] = context    
                     return render(request, 'database/view_vntr.html', {'context':context,
                                                                        'search_type':collected_data['type'].upper(),
                                                                        'len':len(context)})
@@ -67,3 +70,33 @@ def about(request):
 
 def contact(request):
     return render(request, "database/contact.html")
+
+
+def download_vntr(request):
+    context = request.session.get('context', None)
+    
+    if context:
+        csv_content = []
+        csv_content.append(['sequence', 'motif', 'repeat', 'start', 'end', 'length', 'clade', 'subclade'])
+
+        for entry in context:
+            csv_content.append([
+                entry['sequence'],
+                entry['motif'],
+                entry['repeat'],
+                entry['start'],
+                entry['end'],
+                entry['length'],
+                entry['clade'],
+                entry['subclade']
+            ])
+
+        if csv_content:
+            response = HttpResponse(content_type = "text/csv")
+            response['Content-Disposition'] = 'attachment; filename = "result.csv"'
+
+            csv_writer = csv.writer(response)
+
+            for row in csv_content:
+                csv_writer.writerow(row)
+            return response
