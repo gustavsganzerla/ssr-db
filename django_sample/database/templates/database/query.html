@@ -55,5 +55,35 @@
 
 </body>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const field1 = document.getElementById('id_for_gisaid_accession');
+        const field2Radios = document.querySelectorAll('#id_for_clade input[type="radio"]');
+        const field3Radios = document.querySelectorAll('#id_for_subclade input[type="radio"]');
+        const field4Select = document.getElementById('id_for_type');
+    
+        // Function to toggle the disabled state of fields 2, 3, and 4
+        function toggleFields() {
+            const isField1Filled = field1.value.trim().length > 0;
+    
+            // Disable or enable radios for fields 2 and 3
+            field2Radios.forEach(radio => radio.disabled = isField1Filled);
+            field3Radios.forEach(radio => radio.disabled = isField1Filled);
+    
+            // Disable or enable the select field (field 4)
+            field4Select.disabled = isField1Filled;
+        }
+    
+        // Listen for input changes on Field 1
+        field1.addEventListener('input', toggleFields);
+    
+        // Initial check in case Field 1 is pre-filled
+        toggleFields();
+    });
+    
+
+
+</script>
+
 
 {% endblock %}

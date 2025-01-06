@@ -1,0 +1,56 @@
+{% extends 'base.html'%}
+
+{% block content %}
+
+
+<body>
+    <h1>Results searched in <u>{{search_type}}</u>.</h1>
+    <h2>A total of <u>{{len}}</u> records were fetched </h2>
+
+    <a href="{% url 'database:download_issr'%}"download>
+        <button class="download-button"> Download results (.csv)</button>
+    </a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Sequence</th>
+            <th>Standard</th>
+            <th>Motif</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Length</th>
+            <th>Match</th>
+            <th>Substitution</th>
+            <th>Insertion</th>
+            <th>Deletion</th>
+            <th>Score</th>
+            <th>Clade</th>
+            <th>Subclade</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in context%}
+        <tr>
+            <td>{{item.sequence}}</td>
+            <td>{{item.standard}}</td>
+            <td>{{item.motif}}</td>
+            <td>{{item.start}}</td>
+            <td>{{item.end}}</td>
+            <td>{{item.length}}</td>
+            <td>{{item.match}}</td>
+            <td>{{item.subsitution}}</td>
+            <td>{{item.insertion}}</td>
+            <td>{{item.deletion}}</td>
+            <td>{{item.score}}</td>
+            <td>{{item.clade}}</td>
+            <td>{{item.subclade}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</body>
+
+{% endblock %}
+
+
