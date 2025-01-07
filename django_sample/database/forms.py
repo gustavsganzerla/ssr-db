@@ -11,7 +11,7 @@ class QueryForm(forms.Form):
     
     subclade = forms.ChoiceField(
             label='Subclade',
-            choices = [('a', 'A'), ('b', 'B')],
+            choices = [('a', 'a'), ('b', 'b')],
             widget = forms.RadioSelect(attrs={'id':'id_for_subclade'}), 
             required = False
             )
@@ -30,6 +30,20 @@ class QueryForm(forms.Form):
                  ('ssr', 'SSR'),
                  ('vntr', 'VNTR')],
          widget=forms.Select(attrs={'id':'id_for_type'}), 
+         required=True
+        )
+    
+    length = forms.ChoiceField(
+        label = "Choose a length",
+        choices=[('', 'Select an option'),
+                 (1, 'Mono'),
+                 (2, 'Di'),
+                 (3, 'Tri'),
+                 (4, 'Tetra'),
+                 (5, 'Penta'),
+                 (6, 'Hexa'),
+                 ('h6', '>6')],
+         widget=forms.Select(attrs={'id':'id_for_length'}), 
          required=True
         )
 

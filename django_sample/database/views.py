@@ -4,6 +4,7 @@ from . forms import QueryForm
 from django.db.models import Q, Func, Value
 from .models import Cssr, Issr, Ssr, Vntr
 import csv
+from django.db.models.functions import Length
 
 # Create your views here.
 
@@ -42,16 +43,30 @@ def query(request):
                     context = []
 
                     for item in queryset_data:
-                        context.append({
-                            'sequence':item['sequence'],
-                            'motif':item['motif'],
-                            'repeat':item['repeat'],
-                            'start':item['start'],
-                            'end':item['end'],
-                            'length':item['length'],
-                            'clade':item['clade'],
-                            'subclade':item['subclade']
-                        })
+                        if collected_data['length'] == 'h6':
+                            if int(len(item['motif'])) > 6:
+                                context.append({
+                                        'sequence':item['sequence'],
+                                        'motif':item['motif'],
+                                        'repeat':item['repeat'],
+                                        'start':item['start'],
+                                        'end':item['end'],
+                                        'length':item['length'],
+                                        'clade':item['clade'],
+                                        'subclade':item['subclade']
+                                    })
+                        else:
+                            if int(collected_data['length']) == int(len(item['motif'])):
+                                context.append({
+                                        'sequence':item['sequence'],
+                                        'motif':item['motif'],
+                                        'repeat':item['repeat'],
+                                        'start':item['start'],
+                                        'end':item['end'],
+                                        'length':item['length'],
+                                        'clade':item['clade'],
+                                        'subclade':item['subclade']
+                                    })
 
                     request.session['context'] = context    
                     return render(request, 'database/view_vntr.html', {'context':context,
@@ -77,19 +92,40 @@ def query(request):
                     context = []
 
                     for item in queryset_data:
-                        context.append({
-                            'sequence':item['sequence'],
-                            'start':item['start'],
-                            'end':item['end'],
-                            'motif':item['motif'],
-                            'complexity':item['complexity'],
-                            'length':item['length'],
-                            'gap':item['gap'],
-                            'component':item['component'],
-                            'structure':item['structure'],
-                            'clade':item['clade'],
-                            'subclade':item['subclade']
-                            })
+                        motif = item['motif']
+                        aux = motif.split('-')
+                        
+                        if collected_data['length'] == 'h6':
+                                if int(len(aux[0])) > 6:
+                                    context.append({
+                                        'sequence':item['sequence'],
+                                        'start':item['start'],
+                                        'end':item['end'],
+                                        'motif':item['motif'],
+                                        'complexity':item['complexity'],
+                                        'length':item['length'],
+                                        'gap':item['gap'],
+                                        'component':item['component'],
+                                        'structure':item['structure'],
+                                        'clade':item['clade'],
+                                        'subclade':item['subclade']
+                                        })
+                        else:
+                            if int(collected_data['length']) == int(len(aux[0])):
+                                context.append({
+                                        'sequence':item['sequence'],
+                                        'start':item['start'],
+                                        'end':item['end'],
+                                        'motif':item['motif'],
+                                        'complexity':item['complexity'],
+                                        'length':item['length'],
+                                        'gap':item['gap'],
+                                        'component':item['component'],
+                                        'structure':item['structure'],
+                                        'clade':item['clade'],
+                                        'subclade':item['subclade']
+                                        })
+
                     request.session['context'] = context    
                     return render(request, 'database/view_cssr.html', {'context':context,
                                                                        'search_type':collected_data['type'].upper(),
@@ -116,27 +152,46 @@ def query(request):
                     context = []
 
                     for item in queryset_data:
-                        context.append({
-                            'sequence':item['sequence'],
-                            'standard':item['standard'],
-                            'motif':item['motif'],
-                            'start':item['start'],
-                            'end':item['end'],
-                            'length':item['length'],
-                            'match':item['match'],
-                            'subsitution':item['subsitution'],
-                            'insertion':item['insertion'],
-                            'deletion':item['deletion'],
-                            'score':item['score'],
-                            'clade':item['clade'],
-                            'subclade':item['subclade']
-                        })
+                        if collected_data['length'] == 'h6':
+                                if int(len(item['motif'])) > 6:
+                                    context.append({
+                                        'sequence':item['sequence'],
+                                        'standard':item['standard'],
+                                        'motif':item['motif'],
+                                        'start':item['start'],
+                                        'end':item['end'],
+                                        'length':item['length'],
+                                        'match':item['match'],
+                                        'subsitution':item['subsitution'],
+                                        'insertion':item['insertion'],
+                                        'deletion':item['deletion'],
+                                        'score':item['score'],
+                                        'clade':item['clade'],
+                                        'subclade':item['subclade']
+                                    })
+                        else:
+                            if int(collected_data['length']) == int(len(item['motif'])):
+                                context.append({
+                                            'sequence':item['sequence'],
+                                            'standard':item['standard'],
+                                            'motif':item['motif'],
+                                            'start':item['start'],
+                                            'end':item['end'],
+                                            'length':item['length'],
+                                            'match':item['match'],
+                                            'subsitution':item['subsitution'],
+                                            'insertion':item['insertion'],
+                                            'deletion':item['deletion'],
+                                            'score':item['score'],
+                                            'clade':item['clade'],
+                                            'subclade':item['subclade']
+                                        })
+
 
                     request.session['context'] = context    
                     return render(request, 'database/view_issr.html', {'context':context,
                                                                        'search_type':collected_data['type'].upper(),
                                                                        'len':len(context)})
-
 
             if collected_data['type'] == 'ssr':
                 if collected_data['clade']:
@@ -147,6 +202,7 @@ def query(request):
 
                 if collected_data['gisaid_accession']:
                     q_objects &= Q(gisaid_accession__icontains = collected_data['gisaid_accession'])
+                
 
                 if q_objects:
                     results = Ssr.objects.filter(q_objects)
@@ -157,17 +213,32 @@ def query(request):
                     context = []
 
                     for item in queryset_data:
-                        context.append({
-                            'sequence':item['sequence'],
-                            'standard':item['standard'],
-                            'motif':item['motif'],
-                            'repeat':item['repeat'],
-                            'start':item['start'],
-                            'end':item['end'],
-                            'length':item['length'],
-                            'clade':item['clade'],
-                            'subclade':item['subclade']
-                        })
+                            if collected_data['length'] == 'h6':
+                                if int(len(item['motif'])) > 6:
+                                    context.append({
+                                    'sequence':item['sequence'],
+                                    'standard':item['standard'],
+                                    'motif':item['motif'],
+                                    'repeat':item['repeat'],
+                                    'start':item['start'],
+                                    'end':item['end'],
+                                    'length':item['length'],
+                                    'clade':item['clade'],
+                                    'subclade':item['subclade']
+                                })
+                            else:
+                                if int(collected_data['length']) == int(len(item['motif'])):
+                                 context.append({
+                                    'sequence':item['sequence'],
+                                    'standard':item['standard'],
+                                    'motif':item['motif'],
+                                    'repeat':item['repeat'],
+                                    'start':item['start'],
+                                    'end':item['end'],
+                                    'length':item['length'],
+                                    'clade':item['clade'],
+                                    'subclade':item['subclade']
+                                })
                     request.session['context'] = context    
                     return render(request, 'database/view_ssr.html', {'context':context,
                                                                        'search_type':collected_data['type'].upper(),
