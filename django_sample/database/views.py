@@ -46,6 +46,7 @@ def query(request):
                         if collected_data['length'] == 'h6':
                             if int(len(item['motif'])) > 6:
                                 context.append({
+                                        'id':item['id'],
                                         'sequence':item['sequence'],
                                         'motif':item['motif'],
                                         'repeat':item['repeat'],
@@ -58,6 +59,7 @@ def query(request):
                         else:
                             if int(collected_data['length']) == int(len(item['motif'])):
                                 context.append({
+                                        'id':item['id'],
                                         'sequence':item['sequence'],
                                         'motif':item['motif'],
                                         'repeat':item['repeat'],
@@ -66,9 +68,7 @@ def query(request):
                                         'length':item['length'],
                                         'clade':item['clade'],
                                         'subclade':item['subclade']
-                                    })
-
-                    request.session['context'] = context    
+                                    })   
                     return render(request, 'database/view_vntr.html', {'context':context,
                                                                        'search_type':collected_data['type'].upper(),
                                                                        'len':len(context)})
@@ -98,6 +98,7 @@ def query(request):
                         if collected_data['length'] == 'h6':
                                 if int(len(aux[0])) > 6:
                                     context.append({
+                                        'id':item['id'],
                                         'sequence':item['sequence'],
                                         'start':item['start'],
                                         'end':item['end'],
@@ -113,6 +114,7 @@ def query(request):
                         else:
                             if int(collected_data['length']) == int(len(aux[0])):
                                 context.append({
+                                        'id':item['id'],
                                         'sequence':item['sequence'],
                                         'start':item['start'],
                                         'end':item['end'],
@@ -124,9 +126,7 @@ def query(request):
                                         'structure':item['structure'],
                                         'clade':item['clade'],
                                         'subclade':item['subclade']
-                                        })
-
-                    request.session['context'] = context    
+                                        })   
                     return render(request, 'database/view_cssr.html', {'context':context,
                                                                        'search_type':collected_data['type'].upper(),
                                                                        'len':len(context)})
@@ -155,6 +155,7 @@ def query(request):
                         if collected_data['length'] == 'h6':
                                 if int(len(item['motif'])) > 6:
                                     context.append({
+                                        'id':item['id'],
                                         'sequence':item['sequence'],
                                         'standard':item['standard'],
                                         'motif':item['motif'],
@@ -172,6 +173,7 @@ def query(request):
                         else:
                             if int(collected_data['length']) == int(len(item['motif'])):
                                 context.append({
+                                            'id':item['id'],
                                             'sequence':item['sequence'],
                                             'standard':item['standard'],
                                             'motif':item['motif'],
@@ -185,10 +187,7 @@ def query(request):
                                             'score':item['score'],
                                             'clade':item['clade'],
                                             'subclade':item['subclade']
-                                        })
-
-
-                    request.session['context'] = context    
+                                        })   
                     return render(request, 'database/view_issr.html', {'context':context,
                                                                        'search_type':collected_data['type'].upper(),
                                                                        'len':len(context)})
@@ -216,6 +215,7 @@ def query(request):
                             if collected_data['length'] == 'h6':
                                 if int(len(item['motif'])) > 6:
                                     context.append({
+                                    'id':item['id'],
                                     'sequence':item['sequence'],
                                     'standard':item['standard'],
                                     'motif':item['motif'],
@@ -229,6 +229,7 @@ def query(request):
                             else:
                                 if int(collected_data['length']) == int(len(item['motif'])):
                                  context.append({
+                                     'id':item['id'],
                                     'sequence':item['sequence'],
                                     'standard':item['standard'],
                                     'motif':item['motif'],
@@ -239,7 +240,6 @@ def query(request):
                                     'clade':item['clade'],
                                     'subclade':item['subclade']
                                 })
-                    request.session['context'] = context    
                     return render(request, 'database/view_ssr.html', {'context':context,
                                                                        'search_type':collected_data['type'].upper(),
                                                                        'len':len(context)})
@@ -249,6 +249,13 @@ def query(request):
 
     return render(request, "database/query.html", {'form':form})
 
+
+def statistics(request):
+    return render(request, "database/statistics.html")
+
+def faq(request):
+    return render(request, "database/faq.html")
+
 def about(request):
     return render(request, "database/about.html")
 
@@ -256,127 +263,98 @@ def contact(request):
     return render(request, "database/contact.html")
 
 
+###downloads
 def download_vntr(request):
-    context = request.session.get('context', None)
-    
-    if context:
-        csv_content = []
-        csv_content.append(['sequence', 'motif', 'repeat', 'start', 'end', 'length', 'clade', 'subclade'])
+     if request.method == 'POST':
+        selected_ids = request.POST.getlist('selected_items')
+        
+        items = Vntr.objects.filter(id__in=selected_ids)
 
-        for entry in context:
-            csv_content.append([
-                entry['sequence'],
-                entry['motif'],
-                entry['repeat'],
-                entry['start'],
-                entry['end'],
-                entry['length'],
-                entry['clade'],
-                entry['subclade']
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=vntr_results.csv'
+
+        writer = csv.writer(response)
+
+        writer.writerow(['Sequence', 'Motif', 'Repeat', 'Start',
+                          'End', 'Length', 'Clade', 'Subclade'])  
+
+        
+        for item in items:
+            writer.writerow([
+                item.sequence, item.motif, item.repeat, item.start, item.end, 
+                item.length, item.clade, item.subclade
             ])
-
-        if csv_content:
-            response = HttpResponse(content_type = "text/csv")
-            response['Content-Disposition'] = 'attachment; filename = "result_vntr.csv"'
-
-            csv_writer = csv.writer(response)
-
-            for row in csv_content:
-                csv_writer.writerow(row)
-            return response
+        
+        return response
         
 def download_cssr(request):
-    context = request.session.get('context', None)
-    
-    if context:
-        csv_content = []
-        csv_content.append(['sequence', 'start', 'end', 'motif', 'complexity', 'length', 'gap', 'component', 'structure', 'clade', 'subclade'])
-
-        for entry in context:
-            csv_content.append([
-                entry['sequence'],
-                entry['start'],
-                entry['end'],
-                entry['motif'],
-                entry['complexity'],
-                entry['length'],
-                entry['gap'],
-                entry['component'],
-                entry['structure'],
-                entry['clade'],
-                entry['subclade']
-            ])
-
-        if csv_content:
-            response = HttpResponse(content_type = "text/csv")
-            response['Content-Disposition'] = 'attachment; filename = "result_cssr.csv"'
-
-            csv_writer = csv.writer(response)
-
-            for row in csv_content:
-                csv_writer.writerow(row)
-            return response
+    if request.method == 'POST':
+        selected_ids = request.POST.getlist('selected_items')
         
-def download_issr(request):
-    context = request.session.get('context', None)
-    
-    if context:
-        csv_content = []
-        csv_content.append(['sequence', 'standard', 'motif', 'start', 'end', 'length', 'match', 'substitution', 'insertion', 'deletion', 'score', 'clade', 'subclade'])
+        items = Cssr.objects.filter(id__in=selected_ids)
 
-        for entry in context:
-            csv_content.append([
-                entry['sequence'],
-                entry['standard'],
-                entry['motif'],
-                entry['start'],
-                entry['end'],
-                entry['length'],
-                entry['match'],
-                entry['subsitution'],
-                entry['insertion'],
-                entry['deletion'],
-                entry['score'],
-                entry['clade'],
-                entry['subclade']
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=cssr_results.csv'
+
+        writer = csv.writer(response)
+
+        writer.writerow(['Sequence', 'Start', 'End', 'Motif', 'Complexity', 'Length', 
+                         'Gap', 'Component', 'Structure', 'Clade', 'Subclade'])  
+
+        
+        for item in items:
+            writer.writerow([
+                item.sequence, item.start, item.end, item.motif, 
+                item.complexity, item.length, item.gap, item.component, 
+                item.structure, item.clade, item.subclade
             ])
+        
+        return response
 
-        if csv_content:
-            response = HttpResponse(content_type = "text/csv")
-            response['Content-Disposition'] = 'attachment; filename = "result_issr.csv"'
+def download_issr(request):
+    if request.method == 'POST':
+        selected_ids = request.POST.getlist('selected_items')
+        
+        items = Issr.objects.filter(id__in=selected_ids)
 
-            csv_writer = csv.writer(response)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=issr_results.csv'
 
-            for row in csv_content:
-                csv_writer.writerow(row)
-            return response
+        writer = csv.writer(response)
+
+        writer.writerow(['Sequence', 'Standard', 'Motif', 'Start',
+                          'End', 'Length', 'Match', 'Substitution', 'Insertion', 
+                         'Deletion', 'Score', 'Clade', 'Subclade'])  
+
+        
+        for item in items:
+            writer.writerow([
+                item.sequence, item.standard, item.motif, item.start, item.end, 
+                item.length, item.match, item.subsitution, item.insertion, item.deletion,
+                item.score, item.clade, item.subclade
+            ])
+        
+        return response
         
 def download_ssr(request):
-    context = request.session.get('context', None)
-    
-    if context:
-        csv_content = []
-        csv_content.append(['sequence', 'standard', 'motif', 'repeat', 'start', 'end', 'length','clade', 'subclade'])
+    if request.method == 'POST':
+        selected_ids = request.POST.getlist('selected_items')
+        
+        items = Ssr.objects.filter(id__in=selected_ids)
 
-        for entry in context:
-            csv_content.append([
-                entry['sequence'],
-                entry['standard'],
-                entry['motif'],
-                entry['repeat'],
-                entry['start'],
-                entry['end'],
-                entry['length'],
-                entry['clade'],
-                entry['subclade']
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=ssr_results.csv'
+
+        writer = csv.writer(response)
+
+        writer.writerow(['Sequence', 'Standard', 'Motif', 'Repeat', 'Start',
+                          'End', 'Length', 'Clade', 'Subclade'])  
+
+        
+        for item in items:
+            writer.writerow([
+                item.sequence, item.standard, item.motif, item.repeat, item.start, item.end, 
+                item.length, item.clade, item.subclade
             ])
-
-        if csv_content:
-            response = HttpResponse(content_type = "text/csv")
-            response['Content-Disposition'] = 'attachment; filename = "result_ssr.csv"'
-
-            csv_writer = csv.writer(response)
-
-            for row in csv_content:
-                csv_writer.writerow(row)
-            return response
+        
+        return response

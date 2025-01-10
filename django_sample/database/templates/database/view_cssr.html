@@ -7,44 +7,58 @@
     <h1>Results searched in <u>{{search_type}}</u>.</h1>
     <h2>A total of <u>{{len}}</u> records were fetched </h2>
 
-    <a href="{% url 'database:download_cssr'%}"download>
-        <button class="download-button"> Download results (.csv)</button>
-    </a>
+    <form id="download-form" method="post" action="{% url 'database:download_cssr' %}">
+        {% csrf_token %}
+        <button type="submit" class="download-button">Download Selected Results (.csv)</button>
 
-<table>
-    <thead>
-        <tr>
-            <th>Sequence</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Motif</th>
-            <th>Complexity</th>
-            <th>Length</th>
-            <th>Gap</th>
-            <th>Component</th>
-            <th>Structure</th>
-            <th>Clade</th>
-            <th>Subclade</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in context%}
-        <tr>
-            <td>{{item.sequence}}</td>
-            <td>{{item.start}}</td>
-            <td>{{item.end}}</td>
-            <td>{{item.motif}}</td>
-            <td>{{item.complexity}}</td>
-            <td>{{item.length}}</td>
-            <td>{{item.gap}}</td>
-            <td>{{item.component}}</td>
-            <td>{{item.structure}}</td>
-            <td>{{item.clade}}</td>
-            <td>{{item.subclade}}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="select-all" />
+                    </th>
+                    <th>Sequence</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Motif</th>
+                    <th>Complexity</th>
+                    <th>Length</th>
+                    <th>Gap</th>
+                    <th>Component</th>
+                    <th>Structure</th>
+                    <th>Clade</th>
+                    <th>Subclade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in context %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="selected_items" value="{{ item.id }}" />
+                    </td>
+                    <td>{{ item.sequence }}</td>
+                    <td>{{ item.start }}</td>
+                    <td>{{ item.end }}</td>
+                    <td>{{ item.motif }}</td>
+                    <td>{{ item.complexity }}</td>
+                    <td>{{ item.length }}</td>
+                    <td>{{ item.gap }}</td>
+                    <td>{{ item.component }}</td>
+                    <td>{{ item.structure }}</td>
+                    <td>{{ item.clade }}</td>
+                    <td>{{ item.subclade }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+
+    <script>
+        document.getElementById('select-all').addEventListener('change', function () {
+            const checkboxes = document.querySelectorAll('input[name="selected_items"]');
+            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+        });
+    </script>
 </body>
 
 {% endblock %}
