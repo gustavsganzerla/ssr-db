@@ -14,5 +14,7 @@ urlpatterns = [
     path("download_vntr/", views.download_vntr, name = 'download_vntr'),
     path("download_cssr/", views.download_cssr, name = 'download_cssr'),
     path("download_issr/", views.download_issr, name = 'download_issr'),
-    path("download_ssr/", views.download_ssr, name = 'download_ssr')
+    path("download_ssr/", views.download_ssr, name = 'download_ssr'),
+    path("view_primers/", views.view_primers, name = 'view_primers'),
+    path("download_primers/", views.download_primers, name = 'download_primers')
 ]

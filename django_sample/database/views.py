@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from . forms import QueryForm
 from django.db.models import Q, Func, Value
-from .models import Cssr, Issr, Ssr, Vntr
+from .models import Cssr, Issr, Ssr, Vntr, Ssr_primers
 import csv
 from django.db.models.functions import Length
 
@@ -229,7 +229,7 @@ def query(request):
                             else:
                                 if int(collected_data['length']) == int(len(item['motif'])):
                                  context.append({
-                                     'id':item['id'],
+                                    'id':item['id'],
                                     'sequence':item['sequence'],
                                     'standard':item['standard'],
                                     'motif':item['motif'],
@@ -242,7 +242,10 @@ def query(request):
                                 })
                     return render(request, 'database/view_ssr.html', {'context':context,
                                                                        'search_type':collected_data['type'].upper(),
-                                                                       'len':len(context)})
+                                                                       'len':len(context),
+                                                                       'clade':collected_data['clade'],
+                                                                       'subclade':collected_data['subclade'],
+                                                                       'length':collected_data['length']})
 
 
 
@@ -355,6 +358,87 @@ def download_ssr(request):
             writer.writerow([
                 item.sequence, item.standard, item.motif, item.repeat, item.start, item.end, 
                 item.length, item.clade, item.subclade
+            ])
+        
+        return response
+    
+
+def view_primers(request):
+    if request.method == 'POST':
+        clade = request.POST.get('clade')
+        subclade = request.POST.get('subclade')
+        length = request.POST.get('length')
+
+        
+
+        q_objects = Q()
+        q_objects &= Q(clade__icontains = clade)
+        q_objects &= Q(subclade__icontains = subclade)
+
+        if q_objects:
+                    results = Ssr_primers.objects.filter(q_objects)
+                    
+                    queryset_data = []
+                    queryset_data = list(results.values())
+
+                    context = []
+                    #id	sequence	standard	motif	{type}	repeat	start	end	length	
+                    #product	forward	tm_forward	gc_forward	stability_forward	reverse	tm_reverse	gc_reverse	stability_reverse	clade	subclade
+                    for item in queryset_data:
+                        if int(length) == int(len(item['motif'])):
+                            context.append({
+                                'id':item['id'],
+                                'sequence':item['sequence'],
+                                'standard':item['standard'],
+                                'motif':item['motif'],
+                                'repeat':item['repeat'],
+                                'start':item['start'],
+                                'end':item['end'],
+                                'length':item['length'],
+                                'product':item['product'],
+                                'forward':item['forward'],
+                                'tm_forward':item['tm_forward'],
+                                'gc_forward':item['gc_forward'],
+                                'stability_forward':item['stability_forward'],
+                                'reverse':item['reverse'],
+                                'tm_reverse':item['tm_reverse'],
+                                'gc_reverse':item['gc_reverse'],
+                                'stability_reverse':item['stability_reverse'],
+                                'clade':item['clade'],
+                                'subclade':item['subclade']
+                            })
+                    
+                    return render(request, 'database/view_primers.html', {'context':context,
+                                                                          'len':len(context)})
+
+
+def download_primers(request):
+    if request.method == 'POST':
+        selected_ids = request.POST.getlist('selected_items')
+        
+        items = Ssr_primers.objects.filter(id__in=selected_ids)
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=ssr_primers_results.csv'
+
+        writer = csv.writer(response)
+
+        writer.writerow(['Sequence', 'Standard', 'Motif', 'Repeat', 'Start',
+                          'End', 'Length', 
+                          'Product', 
+                          'Forward', 'Forward tm', 'Forward GC', 'Forward Stability',
+                          'Reverse', 'Reverse tm', 'Reverse GC', 'Reverse Stability',
+                          
+                          'Clade', 'Subclade'])  
+
+        
+        for item in items:
+            writer.writerow([
+                item.sequence, item.standard, item.motif, item.repeat, item.start, item.end, item.length,
+                item.product,
+                item.forward, item.tm_forward, item.gc_forward, item.stability_forward,
+                item.reverse, item.tm_reverse, item.gc_reverse, item.stability_reverse,
+                item.clade, item.subclade
             ])
         
         return response

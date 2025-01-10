@@ -4,20 +4,11 @@
 
 
 <body>
-    <h1>Results searched in <u>{{search_type}}</u>.</h1>
-    <h2>A total of <u>{{len}}</u> records were fetched </h2>
+    <h1>Results searched in <u>SSR Primers</u>.</h1>
+    <h2>A total of <u>{{len}}</u> primers were fetched </h2>
 
-    <form id="primers-form" method="post" action="{% url 'database:view_primers' %}">
-        {% csrf_token %}
-        <button type="submit" class="download-button">Pick Primers</button>
-
-        <!-- Hidden Inputs for Shared Fields -->
-        <input type="hidden" name="clade" value="{{ clade }}" />
-        <input type="hidden" name="subclade" value="{{ subclade }}" />
-        <input type="hidden" name="length" value="{{ length }}" />
-    </form>
-
-    <form id="download-form" method="post" action="{% url 'database:download_ssr' %}">
+    <form id="download-form" method="post" action="{% url 'database:download_primers' %}">
+        
         {% csrf_token %}
         <button type="submit" class="download-button">Download Selected Results (.csv)</button>
 
@@ -34,6 +25,14 @@
                     <th>Start</th>
                     <th>End</th>
                     <th>Length</th>
+                    <th>Forward</th>
+                    <th>Forward tm</th>
+                    <th>Forward GC</th>
+                    <th>Forward stability</th>
+                    <th>Reverse</th>
+                    <th>Reverse tm</th>
+                    <th>Reverse GC</th>
+                    <th>Reverse stability</th>
                     <th>Clade</th>
                     <th>Subclade</th>
                 </tr>
@@ -50,7 +49,15 @@
                     <td>{{ item.repeat }}</td>
                     <td>{{ item.start }}</td>
                     <td>{{ item.end }}</td>
-                    <td>{{ item.length }}</td>
+                    <td>{{ item.product }}</td>
+                    <td>{{ item.forward }}</td>
+                    <td>{{ item.tm_forward }}</td>
+                    <td>{{ item.gc_forward }}</td>
+                    <td>{{ item.stability_forward }}</td>
+                    <td>{{ item.reverse }}</td>
+                    <td>{{ item.tm_reverse }}</td>
+                    <td>{{ item.gc_reverse }}</td>
+                    <td>{{ item.stability_reverse }}</td>
                     <td>{{ item.clade }}</td>
                     <td>{{ item.subclade }}</td>
                 </tr>
