@@ -31,7 +31,7 @@ def query(request):
                     q_objects &= Q(subclade__icontains = collected_data['subclade'])
 
                 if collected_data['gisaid_accession']:
-                    q_objects &= Q(gisaid_accession__icontains = collected_data['gisaid_accession'])
+                    q_objects &= Q(sequence__icontains = collected_data['gisaid_accession'])
                 
                 
                 if q_objects:
@@ -81,7 +81,7 @@ def query(request):
                     q_objects &= Q(subclade__icontains = collected_data['subclade'])
 
                 if collected_data['gisaid_accession']:
-                    q_objects &= Q(gisaid_accession__icontains = collected_data['gisaid_accession'])
+                    q_objects &= Q(sequence__icontains = collected_data['gisaid_accession'])
 
                 if q_objects:
                     results = Cssr.objects.filter(q_objects)
@@ -139,7 +139,7 @@ def query(request):
                     q_objects &= Q(subclade__icontains = collected_data['subclade'])
 
                 if collected_data['gisaid_accession']:
-                    q_objects &= Q(gisaid_accession__icontains = collected_data['gisaid_accession'])
+                    q_objects &= Q(sequence__icontains = collected_data['gisaid_accession'])
 
 
 
@@ -200,7 +200,7 @@ def query(request):
                     q_objects &= Q(subclade__icontains = collected_data['subclade'])
 
                 if collected_data['gisaid_accession']:
-                    q_objects &= Q(gisaid_accession__icontains = collected_data['gisaid_accession'])
+                    q_objects &= Q(sequence__icontains = collected_data['gisaid_accession'])
                 
 
                 if q_objects:
