@@ -95,7 +95,9 @@
 
     <!-- Navigation Bar -->
     <div class="navbar">
-        <h2 style="text-align: center;">MpoxMistDB</h2>
+        <h2 style="text-align: center;">
+            <a href="{% url 'database:query' %}">MpoxMistDB</a>
+        </h2>
         <a href="{%url 'database:home'%}">Home</a>
         <a href="{%url 'database:query'%}">Query</a>
         <a href="{%url 'database:statistics'%}">Statistics</a>
