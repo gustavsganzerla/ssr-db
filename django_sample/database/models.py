@@ -76,3 +76,30 @@ class Vntr(models.Model):
     def __str__(self):
         return f"{self.sequence}, {self.motif}, {self.repeat}, {self.start}, {self.end}, {self.length}, {self.clade}, {self.subclade}"
 
+class Ssr_primers(models.Model):
+    #id	sequence	standard	motif	{type}	repeat	start	end	length	product	forward	tm_forward	gc_forward	stability_forward	reverse	tm_reverse	gc_reverse	stability_reverse	clade	subclade
+    #repeat the attributes from the ssr model
+    id = models.BigAutoField(primary_key=True)
+    sequence = models.CharField(max_length=200)
+    standard = models.CharField(max_length=50)
+    motif = models.CharField(max_length=50)
+    repeat = models.IntegerField()
+    start = models.IntegerField()
+    end = models.IntegerField()
+    length = models.IntegerField()
+    clade = models.IntegerField()
+    subclade = models.CharField(max_length=50)
+    ##primer specific attributes
+    product = models.CharField(max_length=300)
+    forward = models.CharField(max_length=200)
+    tm_forward = models.FloatField()
+    gc_forward = models.FloatField()
+    stability_forward = models.FloatField()
+    reverse = models.CharField(max_length=200)
+    tm_reverse = models.FloatField()
+    gc_reverse = models.FloatField()
+    stability_reverse = models.FloatField()
+
+    def __str__(self):
+        return f"{self.sequence}, {self.standard}, {self.motif}, {self.repeat}, {self.start}, {self.end}, {self.length}, {self.clade}, {self.subclade}, {self.product}, {self.forward}, {self.tm_forward}, {self.gc_forward}, {self.stability_forward}, {self.reverse}, {self.tm_reverse}, {self.gc_reverse}, {self.stability_reverse}"
+        
