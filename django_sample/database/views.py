@@ -245,7 +245,8 @@ def query(request):
                                                                        'len':len(context),
                                                                        'clade':collected_data['clade'],
                                                                        'subclade':collected_data['subclade'],
-                                                                       'length':collected_data['length']})
+                                                                       'length':collected_data['length'],
+                                                                       'gisaid_accession':collected_data['gisaid_accession']})
 
 
 
@@ -368,12 +369,12 @@ def view_primers(request):
         clade = request.POST.get('clade')
         subclade = request.POST.get('subclade')
         length = request.POST.get('length')
-
-        
+        gisaid_accession = request.POST.get('gisaid_accession')
 
         q_objects = Q()
         q_objects &= Q(clade__icontains = clade)
         q_objects &= Q(subclade__icontains = subclade)
+        q_objects &= Q(sequence__icontains = gisaid_accession)
 
         if q_objects:
                     results = Ssr_primers.objects.filter(q_objects)

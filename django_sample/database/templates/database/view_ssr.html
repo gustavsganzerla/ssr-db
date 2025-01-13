@@ -15,6 +15,7 @@
         <input type="hidden" name="clade" value="{{ clade }}" />
         <input type="hidden" name="subclade" value="{{ subclade }}" />
         <input type="hidden" name="length" value="{{ length }}" />
+        <input type="hidden" name="gisaid_accession" value="{{ gisaid_accession }}" />
     </form>
 
     <form id="download-form" method="post" action="{% url 'database:download_ssr' %}">
