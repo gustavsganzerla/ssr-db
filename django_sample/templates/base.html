@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,6 +90,30 @@
         
         th {
             background-color: #f2f2f2;
+        }
+
+        .figure-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .figure-container img {
+            max-width: 300px; /* Adjust as needed */
+            margin-right: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .legend {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .horizontal-bar {
+            margin-top: 10px;
+            height: 5px;
+            background-color: #535c5b;
+            border-radius: 2px;
         }
     </style>
 </head>

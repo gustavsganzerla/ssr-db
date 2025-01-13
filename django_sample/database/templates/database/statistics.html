@@ -1,7 +1,16 @@
 {% extends 'base.html'%}
-
+{% load static %}
 {% block content %}
 
-<p> Statistics </p>
+<h1> MpoxMistDB Statistics </h1>
+
+<div class='figure-container'>
+    <img src="{% static 'images/Figure1.JPG' %}" alt="Figure 1">
+    <div class='legend'>
+        <strong>Legend:</strong> Figure 1. Pie charts of predicted microsatellites in the MPXV genomes: (a) Clade Ia; (b) Clade Ib; (c) Clade IIa; and (d) Clade IIb. 
+    </div>
+</div>
+
+    <div class='horizontal-bar'></div>
 
 {% endblock %}
