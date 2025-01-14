@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_recaptcha'
 ]
 
 MIDDLEWARE = [
@@ -143,3 +144,5 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+RECAPTCHA_PUBLIC_KEY = '6LfjubcqAAAAAHmsxH04WxRd5BFXhAdbb3_gkCh1'
+RECAPTCHA_PRIVATE_KEY = '6LfjubcqAAAAAIodnQPVbQZmP2tbXUII69lowg-Z'

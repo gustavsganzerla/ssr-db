@@ -43,6 +43,10 @@
             <label for="{{form.message.id_for_message}}">Message:</label>
             {{form.message}}
         </div>
+        <div class='form-row'>
+            <label for="{{form.message.id_for_captcha}}"></label>
+            {{form.captcha}}
+        </div>
 
         <button class='submit-button' onclick="clearForm()">Clear</button>
         <button class='submit-button'>Send Message</button>
