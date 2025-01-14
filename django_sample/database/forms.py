@@ -46,6 +46,15 @@ class QueryForm(forms.Form):
          widget=forms.Select(attrs={'id':'id_for_length'}), 
          required=True
         )
+    
+class ContactForm(forms.Form):
+    subject = forms.CharField(required=True)
+    email = forms.EmailField(required=True)
+    message = forms.CharField(widget=forms.Textarea(attrs={"rows":10, 
+                                                                "cols":40,
+                                                                "placeholder":"Type your message here"}),
+                                                                required=True)
+    
 
 
     

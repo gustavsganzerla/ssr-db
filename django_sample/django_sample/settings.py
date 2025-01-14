@@ -130,6 +130,16 @@ import os
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 
-
+# this allows more data to be shown in the db queries
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000
+
+
+# Email configuration
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'sganzerlagustavo@gmail.com'
+EMAIL_HOST_PASSWORD = 'tktlmdombhozitpd'
+EMAIL_PORT = '465'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
